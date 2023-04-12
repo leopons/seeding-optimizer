@@ -1,5 +1,6 @@
 import json
 from lib import brackets
+from lib.model import optimize
 
 with open('brackets.json', 'r') as file:
     BRACKETS_REF = json.load(file)
@@ -44,13 +45,18 @@ def http_entrypoint(request):
         seeding_alternative = None
         deviation_score = 0
     else:
-        # TODO Opti
-        pass
+        model_result = optimize(nb_players, matches, groups, minimization_power)
+        seeding_alternative = model_result['alternative_seeding']
+        deviation_score = model_result['deviation_score']
+        # Update groups to reflect new team seedings
+        groups = {group: [seeding_alternative[el] for el in members]
+                    for group, members in groups.items()}
     collides = brackets.get_collides(matches, groups)
     return ({
         "status": "OK",
         "deviation_score": deviation_score,
         "seeding_alternative": seeding_alternative,
         "collides": collides,
+        "total_collide_score": sum([el['prob'] for el in collides]),
 
     }, 200, headers)
