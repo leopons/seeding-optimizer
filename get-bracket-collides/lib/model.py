@@ -41,26 +41,30 @@ def optimize(nb_players, matches, groups, power):
     model.Add(total_collide_cost == sum(collide_costs))
     model.Minimize(total_collide_cost)
 
+    BDV = 1000  # Base Deviation Factor
+    # Reducing it -> More rounding approximations
+    # Increasing it -> Larger variables domains
+
     # This is used to ponderate deviation so that bad seeds deviations cost less
     # compared to good seeds deviations
     def deviation_factor(seed):
-        return int(1000/(math.sqrt(seed+1)*nb_players))
+        return int(BDV / (math.sqrt(seed+1) * nb_players))
 
     # Create vars for each player deviation
     deviation_costs = []
     for i in range(nb_players):
         # i is the original seeding
-        deviation_cost = model.NewIntVar(-1000, 1000, f'{i} deviation')
+        deviation_cost = model.NewIntVar(-BDV, BDV, f'{i} deviation')
         model.Add(deviation_cost == (variables[i] - i) * deviation_factor(i))
-        abs_deviation_cost = model.NewIntVar(0, 1000, f'{i} abs deviation')
+        abs_deviation_cost = model.NewIntVar(0, BDV, f'{i} abs deviation')
         model.AddAbsEquality(abs_deviation_cost, deviation_cost)
         deviation_costs.append(abs_deviation_cost)
 
     # Create the total deviation cost and define the constraint
-    total_deviation_cost = model.NewIntVar(0, 1000000, 'total_deviation_cost')
+    total_deviation_cost = model.NewIntVar(0, BDV*nb_players, 'total_deviation_cost')
     model.Add(total_deviation_cost == sum(deviation_costs))
 
-    max_deviation = int(100*power)
+    max_deviation = int(BDV*power/20)
     model.Add(total_deviation_cost <= max_deviation)
 
     # Add Hints (initial seeding) to speed up the process
