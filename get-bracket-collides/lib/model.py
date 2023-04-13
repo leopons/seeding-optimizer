@@ -60,7 +60,8 @@ def optimize(nb_players, matches, groups, power):
     total_deviation_cost = model.NewIntVar(0, 1000000, 'total_deviation_cost')
     model.Add(total_deviation_cost == sum(deviation_costs))
 
-    model.Add(total_deviation_cost < 100*power)
+    max_deviation = int(100*power)
+    model.Add(total_deviation_cost <= max_deviation)
 
     # Add Hints (initial seeding) to speed up the process
     for i, xi in enumerate(variables):
@@ -68,7 +69,7 @@ def optimize(nb_players, matches, groups, power):
 
     # Define the solver
     solver = cp_model.CpSolver()
-    solver.parameters.max_time_in_seconds = 30.0
+    solver.parameters.max_time_in_seconds = 100
 
     # Solve the problem
     status = solver.Solve(model)
@@ -82,4 +83,4 @@ def optimize(nb_players, matches, groups, power):
             }
         }
     else:
-        raise Exception('CP-SAT solver did not find a solution.')
+        raise Exception(f'CP-SAT solver did not find a solution. Status: {status}')
