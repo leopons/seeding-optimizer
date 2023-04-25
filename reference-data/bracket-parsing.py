@@ -6,7 +6,8 @@ def parse_player(text):
     text = text[1:]
     match = re.match(r'^(\d+)(.*)$', text)
     if match:
-        return int(match.group(1))
+        # In our system seeding starts at 0
+        return int(match.group(1)) - 1
     else:
         return text
 
@@ -21,7 +22,7 @@ def parse(html):
 
 
 def load_and_parse(nb_players):
-    with open(f'scraps/{nb_players}.txt', 'r') as file:
+    with open(f'../local/scraps/{nb_players}.txt', 'r') as file:
         scraped = file.read()
     return parse(scraped)
 
@@ -31,5 +32,5 @@ for nb_players in range(8, 33):
     print(f'Parsing #{nb_players}')
     final[nb_players] = load_and_parse(nb_players)
 
-with open('brackets.json', 'w') as file:
+with open('../local/brackets.json', 'w') as file:
     file.write(json.dumps(final))

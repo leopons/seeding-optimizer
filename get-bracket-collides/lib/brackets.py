@@ -1,6 +1,13 @@
 from itertools import combinations
 
 
+# def ouput_proba_s(x, y):
+#     base = (y-x)/(2*(x+y)) # [-0.5, 0.5]
+#     sign = math.copysign(1, base)
+#     stronger = sign * math.sqrt(abs(base*2))/2 # [-0.5, 0.5]
+#     return stronger + 0.5
+
+
 def ouput_proba(x, y):
     return (y-x)/(2*(x+y)) + 0.5
 
@@ -136,6 +143,6 @@ def get_collides(matches, groups):
                         'prob': total,
                         'encounters': encounters,
                     }
-    formatted = [{'players': [list(key)], **el} for key, el in collides.items()]
+    formatted = [{'players': list(key), **el} for key, el in collides.items()]
     formatted.sort(key = lambda t: t['prob'], reverse=True)
     return formatted
