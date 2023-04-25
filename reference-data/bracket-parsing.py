@@ -28,7 +28,7 @@ def load_and_parse(nb_players):
 
 final = {}
 
-for nb_players in range(8, 33):
+for nb_players in range(8, 65):
     print(f'Parsing #{nb_players}')
     final[nb_players] = load_and_parse(nb_players)
 

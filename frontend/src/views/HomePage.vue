@@ -5,7 +5,7 @@
         Automatically minimize collides on your start.gg bracket!
       </div>
       <div class="subtitle">
-        This currently supports Double Elimination brackets from 8 to 32
+        This currently supports Double Elimination brackets from 8 to 64
         players.
       </div>
       <div v-if="errorNumberPlayers" class="error">
@@ -51,7 +51,7 @@ export default {
         // Should be already sorted but just to be sure
         data.sort((a, b) => a['"Pool Seed"'] - b['"Pool Seed"']);
         let players = data.map((el) => el['"Entrant"']);
-        if (players.length < 8 || players.length > 32) {
+        if (players.length < 8 || players.length > 64) {
           this.errorNumberPlayers = players.length;
           return;
         }

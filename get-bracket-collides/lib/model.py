@@ -64,7 +64,10 @@ def optimize(nb_players, matches, groups, power):
     total_deviation_cost = model.NewIntVar(0, BDV*nb_players, 'total_deviation_cost')
     model.Add(total_deviation_cost == sum(deviation_costs))
 
-    max_deviation = int(BDV*power/20)
+    # max_deviation depends on power and on nb_players so that we get
+    # same order of magnitude of execution time for same power
+    # (smaller max_deviation -> smaller domain -> faster)
+    max_deviation = int(BDV*power/nb_players)
     model.Add(total_deviation_cost <= max_deviation)
 
     # Add Hints (initial seeding) to speed up the process
