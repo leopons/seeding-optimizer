@@ -14,6 +14,7 @@
   <div class="app-container">
     <router-view />
   </div>
+  <div class="no-responsive">Please get on a wider screen to use this app.</div>
 </template>
 
 <style lang="scss">
@@ -61,5 +62,26 @@ a.header-bar__link {
 
 .app-container {
   height: calc(100vh - 30px);
+}
+
+.no-responsive {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+@media (min-width: 920px) {
+  .no-responsive {
+    display: none;
+  }
 }
 </style>
