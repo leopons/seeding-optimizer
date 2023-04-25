@@ -132,7 +132,7 @@ export default {
 .page-container {
   display: flex;
   justify-content: space-around;
-  height: 100vh;
+  height: 100%;
 }
 .column-container {
   width: 48%;

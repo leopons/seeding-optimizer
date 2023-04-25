@@ -59,7 +59,7 @@ export default {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  height: 100vh;
+  height: 100%;
 }
 .column-container {
   width: 400px;
