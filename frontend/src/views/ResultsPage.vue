@@ -11,10 +11,17 @@
           "
           v-for="(alternative, power) in alternatives"
           :key="power"
-          @click="selected_alternative = power"
+          @click="selectAlternative(power)"
         >
-          <div v-if="alternative.loading">LOADING</div>
-          <div v-else-if="alternative.error">ERROR</div>
+          <div v-if="alternative.loading"><LoadingIcon :size="40" /></div>
+          <div v-else-if="alternative.error">
+            <span class="alternative__error">Unexpected Error</span><br />
+            <span
+              class="alternative__try-again"
+              @click="getCollides(Number(power))"
+              >Try again</span
+            >
+          </div>
           <div v-else>
             <div>
               <b v-if="power == 0">Original Seeding</b>
@@ -120,6 +127,7 @@
 </template>
 
 <script>
+import LoadingIcon from "@/components/LoadingIcon.vue";
 import { usePlayersStore } from "@/store/playersStore";
 
 export default {
@@ -127,6 +135,7 @@ export default {
     const store = usePlayersStore();
     return { store };
   },
+  components: { LoadingIcon },
   data() {
     return {
       alternatives: {},
@@ -155,6 +164,11 @@ export default {
     },
   },
   methods: {
+    selectAlternative(power) {
+      if (this.alternatives[power].players) {
+        this.selected_alternative = power;
+      }
+    },
     capitalize(myString) {
       return myString.charAt(0).toUpperCase() + myString.slice(1);
     },
@@ -303,15 +317,22 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
 
-  &:hover {
-    background-color: rgba(black, 0.1);
+  &:not(.--loading, .--error) {
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(black, 0.1);
+    }
   }
 
-  &.--loading,
-  &.--error {
-    pointer-events: none;
+  .alternative__error {
+    color: orange;
+    font-style: italic;
+  }
+
+  .alternative__try-again {
+    cursor: pointer;
+    text-decoration: underline;
   }
 
   .alternative__grade-scores {
